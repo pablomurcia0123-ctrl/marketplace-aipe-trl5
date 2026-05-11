@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Marketplace Agrícola - Aipe</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 15px; border-radius: 8px; border-left: 5px solid #28a745; }
+        h1 { color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <h1>Productos de Aipe, Huila</h1>
+    <div id="productos" class="grid">
+        </div>
+
+    <script>
+        // Simulación de carga de datos para el prototipo
+        const productosDummy = [
+            { nombre: "Arroz", precio: 2500, unidad: "kg", vendedor: "Don Pedro" },
+            { nombre: "Cacao", precio: 12000, unidad: "libra", vendedor: "Finca La Esperanza" },
+            { nombre: "Limón", precio: 1500, unidad: "malla", vendedor: "Asoc. Aipe" }
+        ];
+
+        const contenedor = document.getElementById('productos');
+        productosDummy.forEach(p => {
+            contenedor.innerHTML += `
+                <div class="card">
+                    <h3>${p.nombre}</h3>
+                    <p>Precio: $${p.precio} / ${p.unidad}</p>
+                    <small>Vendedor: ${p.vendedor}</small>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>
