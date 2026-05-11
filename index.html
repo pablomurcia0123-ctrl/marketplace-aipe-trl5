@@ -16,23 +16,31 @@
         </div>
 
     <script>
-        // Simulación de carga de datos para el prototipo
-        const productosDummy = [
-            { nombre: "Arroz", precio: 2500, unidad: "kg", vendedor: "Don Pedro" },
-            { nombre: "Cacao", precio: 12000, unidad: "libra", vendedor: "Finca La Esperanza" },
-            { nombre: "Limón", precio: 1500, unidad: "malla", vendedor: "Asoc. Aipe" }
-        ];
-
-        const contenedor = document.getElementById('productos');
-        productosDummy.forEach(p => {
-            contenedor.innerHTML += `
-                <div class="card">
-                    <h3>${p.nombre}</h3>
-                    <p>Precio: $${p.precio} / ${p.unidad}</p>
-                    <small>Vendedor: ${p.vendedor}</small>
-                </div>
-            `;
-        });
-    </script>
+    async function cargarProductos() {
+        try {
+            // Conexión real al servidor Node.js
+            const respuesta = await fetch('http://localhost:3000/api/productos');
+            const productos = await respuesta.json();
+            
+            const contenedor = document.getElementById('productos');
+            contenedor.innerHTML = ''; // Limpiar
+            
+            productos.forEach(p => {
+                contenedor.innerHTML += `
+                    <div class="card">
+                        <h3>${p.nombre}</h3>
+                        <p>Categoría: ${p.categoria}</p>
+                        <p class="price">$${p.precio} / ${p.unidad}</p>
+                        <small>Ubicación: ${p.ubicacion}</small>
+                        <button class="btn">Contactar Agricultor</button>
+                    </div>
+                `;
+            });
+        } catch (error) {
+            console.error("Error conectando al backend:", error);
+        }
+    }
+    cargarProductos();
+</script>
 </body>
 </html>
