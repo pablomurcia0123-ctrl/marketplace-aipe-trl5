@@ -2,45 +2,82 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Marketplace Agrícola - Aipe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace Agrícola Aipe - TRL5</title>
     <style>
-        body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-        .card { background: white; padding: 15px; border-radius: 8px; border-left: 5px solid #28a745; }
-        h1 { color: #2e7d32; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: #f4f7f6; }
+        header { background: #2e7d32; color: white; padding: 1.5rem; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .container { padding: 20px; max-width: 900px; margin: auto; }
+        .form-section { background: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn { background: #2e7d32; color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; width: 100%; font-size: 1rem; }
+        .btn:hover { background: #1b5e20; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-top: 5px solid #4caf50; }
+        .price { color: #2e7d32; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h1>Productos de Aipe, Huila</h1>
-    <div id="productos" class="grid">
+    <header>
+        <h1>Marketplace Campesino Aipe, Huila</h1>
+        <p>Prototipo Funcional de Ingeniería - Nivel TRL5</p>
+    </header>
+
+    <div class="container">
+        <div class="form-section">
+            <h3>Registrar Nuevo Producto (Agricultor)</h3>
+            <input type="text" id="nombre" placeholder="Nombre del producto (Ej: Arroz)">
+            <input type="number" id="precio" placeholder="Precio por unidad">
+            <input type="text" id="vendedor" placeholder="Tu nombre o finca">
+            <button class="btn" onclick="publicarProducto()">Publicar en el Marketplace</button>
         </div>
 
+        <h2>Catálogo en Tiempo Real</h2>
+        <div id="productos" class="grid">
+            </div>
+    </div>
+
     <script>
-    async function cargarProductos() {
-        try {
-            // Conexión real al servidor Node.js
-            const respuesta = await fetch('http://localhost:3000/api/productos');
-            const productos = await respuesta.json();
-            
-            const contenedor = document.getElementById('productos');
-            contenedor.innerHTML = ''; // Limpiar
-            
-            productos.forEach(p => {
-                contenedor.innerHTML += `
-                    <div class="card">
-                        <h3>${p.nombre}</h3>
-                        <p>Categoría: ${p.categoria}</p>
-                        <p class="price">$${p.precio} / ${p.unidad}</p>
-                        <small>Ubicación: ${p.ubicacion}</small>
-                        <button class="btn">Contactar Agricultor</button>
-                    </div>
-                `;
-            });
-        } catch (error) {
-            console.error("Error conectando al backend:", error);
+        const API_URL = 'http://localhost:3000/api/productos';
+
+        // Función para cargar productos desde el servidor (GET)
+        async function cargarProductos() {
+            try {
+                const res = await fetch(API_URL);
+                const productos = await res.json();
+                const contenedor = document.getElementById('productos');
+                contenedor.innerHTML = '';
+                productos.forEach(p => {
+                    contenedor.innerHTML += `
+                        <div class="card">
+                            <h3>${p.nombre}</h3>
+                            <p class="price">$${p.precio}</p>
+                            <p><small>Vendedor: ${p.vendedor}</small></p>
+                            <p><small>Origen: Aipe, Huila</small></p>
+                        </div>`;
+                });
+            } catch (e) { console.log("Servidor offline o cargando..."); }
         }
-    }
-    cargarProductos();
-</script>
+
+        // Función para enviar producto al servidor (POST)
+        async function publicarProducto() {
+            const data = {
+                nombre: document.getElementById('nombre').value,
+                precio: document.getElementById('precio').value,
+                vendedor: document.getElementById('vendedor').value
+            };
+
+            await fetch(API_URL, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+
+            alert("Producto publicado exitosamente en el servidor local");
+            cargarProductos(); // Recargar lista
+        }
+
+        cargarProductos();
+    </script>
 </body>
 </html>
